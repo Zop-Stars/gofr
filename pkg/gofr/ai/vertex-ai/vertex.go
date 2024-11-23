@@ -49,7 +49,7 @@ func NewVertexAIClientWithKey(configs *Configs) (*VertexAIClient, error) {
 }
 
 // GetResponse sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponse(prompt []map[string]string) (string, error) {
+func (c *VertexAIClient) SendMessage(prompt []map[string]string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -65,8 +65,8 @@ func (c *VertexAIClient) GetResponse(prompt []map[string]string) (string, error)
 	return concatenateAllEntries(response), nil
 }
 
-// GetResponseUsingDatastore sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponseUsingDatastore(prompt []map[string]string, datastore []string) (string, error) {
+// SendMessageUsingDatastore sends a request to the Vertex AI endpoint and returns the response.
+func (c *VertexAIClient) SendMessageUsingDatastore(prompt []map[string]string, datastore []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -82,8 +82,8 @@ func (c *VertexAIClient) GetResponseUsingDatastore(prompt []map[string]string, d
 	return concatenateAllEntries(response), nil
 }
 
-// GetResponseUsingSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponseUsingSystemInstruction(prompt []map[string]string, systemInstruction []string) (string, error) {
+// SendMessageUsingSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
+func (c *VertexAIClient) SendMessageUsingSystemInstruction(prompt []map[string]string, systemInstruction []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -99,8 +99,8 @@ func (c *VertexAIClient) GetResponseUsingSystemInstruction(prompt []map[string]s
 	return concatenateAllEntries(response), nil
 }
 
-// GetResponseUsingDatastoreAndSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponseUsingDatastoreAndSystemInstruction(prompt []map[string]string, datastore []string, systemInstruction []string) (string, error) {
+// SendMessageUsingDatastoreAndSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
+func (c *VertexAIClient) SendMessageUsingDatastoreAndSystemInstruction(prompt []map[string]string, datastore []string, systemInstruction []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
