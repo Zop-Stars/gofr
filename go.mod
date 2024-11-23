@@ -1,6 +1,8 @@
-module gofr.dev
+module github.com/Zop-Stars/gofr
 
 go 1.22
+
+replace gofr.dev => github.com/Zop-Stars/gofr v0.0.0-20241119071844-d8ad7a42f0c2
 
 require (
 	cloud.google.com/go/pubsub v1.45.1
@@ -35,6 +37,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.30.0
 	go.opentelemetry.io/otel/trace v1.32.0
 	go.uber.org/mock v0.5.0
+	gofr.dev v1.27.1
 	golang.org/x/oauth2 v0.24.0
 	golang.org/x/sync v0.9.0
 	golang.org/x/term v0.26.0
