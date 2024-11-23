@@ -39,18 +39,23 @@ func (c *VertexAIClient) getResponseFromAPI(url string, payload *RequestPayload)
 	}
 
 	entries := make([]DataEntry, 0)
-	decoder := json.NewDecoder(resp.Body)
+	//decoder := json.NewDecoder(resp.Body)
 
-	for {
-		var chunk DataEntry
-
-		if err := decoder.Decode(&chunk); err == io.EOF {
-			break
-		} else if err != nil {
-			return nil, fmt.Errorf("error decoding response chunk: %w", err)
-		}
-		entries = append(entries, chunk)
+	err = json.Unmarshal(responseBody, &entries)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
+
+	//for {
+	//	var chunk DataEntry
+	//
+	//	if err := decoder.Decode(&chunk); err == io.EOF {
+	//		break
+	//	} else if err != nil {
+	//		return nil, fmt.Errorf("error decoding response chunk: %w", err)
+	//	}
+	//	entries = append(entries, chunk)
+	//}
 
 	return entries, nil
 }
