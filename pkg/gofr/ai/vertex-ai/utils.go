@@ -87,16 +87,9 @@ func (c *VertexAIClient) getResponseFromAPI(url string, payload *RequestPayload)
 //	return entries, nil
 //}
 
-func (c *VertexAIClient) generateRequestPayload(prompt string, datastores []string, systemInstructions []string) *RequestPayload {
+func (c *VertexAIClient) generateRequestPayload(prompt []map[string]string, datastores []string, systemInstructions []string) *RequestPayload {
 	payload := &RequestPayload{
-		Contents: []Message{
-			{
-				Role: "user",
-				Parts: []Part{
-					{Text: prompt},
-				},
-			},
-		},
+		Contents: c.mapToMessage(prompt),
 		GenerationConfig: GenerationConfig{
 			Temperature:     1.0,
 			MaxOutputTokens: 8192,
@@ -153,4 +146,22 @@ func (c *VertexAIClient) generateSystemInstructionForPayload(systemInstructs []s
 	}
 
 	return SystemInstruction{Parts: parts}
+}
+
+func (c *VertexAIClient) mapToMessage(prompt []map[string]string) []Message {
+	message := make([]Message, 0)
+
+	for i := range prompt {
+		role := prompt[i]["role"]
+		text := prompt[i]["text"]
+
+		message = append(message, Message{
+			Role: role,
+			Parts: []Part{
+				{Text: text},
+			},
+		})
+	}
+
+	return message
 }

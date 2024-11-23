@@ -49,7 +49,7 @@ func NewVertexAIClientWithKey(configs *Configs) (*VertexAIClient, error) {
 }
 
 // GetResponse sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponse(prompt string) (string, error) {
+func (c *VertexAIClient) GetResponse(prompt []map[string]string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -66,7 +66,7 @@ func (c *VertexAIClient) GetResponse(prompt string) (string, error) {
 }
 
 // GetResponseUsingDatastore sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponseUsingDatastore(prompt string, datastore []string) (string, error) {
+func (c *VertexAIClient) GetResponseUsingDatastore(prompt []map[string]string, datastore []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -83,7 +83,7 @@ func (c *VertexAIClient) GetResponseUsingDatastore(prompt string, datastore []st
 }
 
 // GetResponseUsingSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponseUsingSystemInstruction(prompt string, systemInstruction []string) (string, error) {
+func (c *VertexAIClient) GetResponseUsingSystemInstruction(prompt []map[string]string, systemInstruction []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -100,7 +100,7 @@ func (c *VertexAIClient) GetResponseUsingSystemInstruction(prompt string, system
 }
 
 // GetResponseUsingDatastoreAndSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponseUsingDatastoreAndSystemInstruction(prompt string, datastore []string, systemInstruction []string) (string, error) {
+func (c *VertexAIClient) GetResponseUsingDatastoreAndSystemInstruction(prompt []map[string]string, datastore []string, systemInstruction []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
