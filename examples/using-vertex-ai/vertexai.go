@@ -1,4 +1,4 @@
-package vertexai
+package main
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"golang.org/x/oauth2/google"
 )
@@ -69,12 +70,66 @@ type VertexAIClient struct {
 	httpClient  *http.Client
 }
 
-// NewVertexAIClient creates a new client for Vertex AI.
-func NewVertexAIClientWithKey(projectID, locationID, apiEndpoint, modelID, credentialsFilePath string) (*VertexAIClient, error) {
+type RetrievedContext struct {
+	URI   string `json:"uri"`
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}
+
+type GroundingChunk struct {
+	RetrievedContext RetrievedContext `json:"retrievedContext"`
+}
+
+type GroundingMetadata struct {
+	GroundingChunks []GroundingChunk `json:"groundingChunks"`
+}
+
+type Content struct {
+	Role  string `json:"role"`
+	Parts []struct {
+		Text string `json:"text"`
+	} `json:"parts"`
+}
+
+type Candidate struct {
+	Content           Content           `json:"content"`
+	FinishReason      string            `json:"finishReason,omitempty"`
+	GroundingMetadata GroundingMetadata `json:"groundingMetadata,omitempty"`
+}
+
+type DataEntry struct {
+	Candidates   []Candidate `json:"candidates"`
+	ModelVersion string      `json:"modelVersion"`
+}
+
+func (d *DataEntry) ConcatenateParts() string {
+	var builder strings.Builder
+
+	for _, candidate := range d.Candidates {
+		for _, part := range candidate.Content.Parts {
+			builder.WriteString(fmt.Sprint(part.Text))
+		}
+	}
+
+	return builder.String()
+}
+
+func ConcatenateAllEntries(entries []DataEntry) string {
+	var builder strings.Builder
+
+	for _, entry := range entries {
+		builder.WriteString(entry.ConcatenateParts())
+	}
+
+	return builder.String()
+}
+
+// NewVertexAIClientWithKey creates a new client for Vertex AI.
+func NewVertexAIClientWithKey(projectID, locationID, apiEndpoint, modelID, creds string) (*VertexAIClient, error) {
 	ctx := context.Background()
 
 	// Load the service account credentials
-	credentials, err := google.CredentialsFromJSON(ctx, []byte(credentialsFilePath), "https://www.googleapis.com/auth/cloud-platform")
+	credentials, err := google.CredentialsFromJSON(ctx, []byte(creds), "https://www.googleapis.com/auth/cloud-platform")
 	if err != nil {
 		return nil, fmt.Errorf("failed to load service account credentials: %w", err)
 	}
