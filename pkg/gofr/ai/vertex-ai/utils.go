@@ -39,28 +39,55 @@ func (c *VertexAIClient) getResponseFromAPI(url string, payload *RequestPayload)
 	}
 
 	entries := make([]DataEntry, 0)
-	//decoder := json.NewDecoder(resp.Body)
 
 	err = json.Unmarshal(responseBody, &entries)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
-	//for {
-	//	var chunk DataEntry
-	//
-	//	if err := decoder.Decode(&chunk); err == io.EOF {
-	//		break
-	//	} else if err != nil {
-	//		return nil, fmt.Errorf("error decoding response chunk: %w", err)
-	//	}
-	//	entries = append(entries, chunk)
-	//}
-
 	return entries, nil
 }
 
-func (c *VertexAIClient) generateRequestPayload(prompt string, datastores ...string) *RequestPayload {
+//func (c *VertexAIClient) getResponseFromAPI(url string, payload *RequestPayload) ([]DataEntry, error) {
+//	jsonPayload, err := json.Marshal(payload)
+//	if err != nil {
+//		return nil, fmt.Errorf("failed to marshal request payload: %w", err)
+//	}
+//
+//	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonPayload))
+//	if err != nil {
+//		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+//	}
+//
+//	req.Header.Set("Content-Type", "application/json")
+//
+//	resp, err := c.httpClient.Do(req)
+//	if err != nil {
+//		return nil, fmt.Errorf("failed to send HTTP request: %w", err)
+//	}
+//	defer resp.Body.Close()
+//
+//	if resp.StatusCode != http.StatusOK {
+//		responseBody, _ := io.ReadAll(resp.Body)
+//		return nil, fmt.Errorf("error response from Vertex AI: %s", string(responseBody))
+//	}
+//
+//	// Use a JSON decoder to stream the response
+//	decoder := json.NewDecoder(resp.Body)
+//	entries := make([]DataEntry, 0)
+//
+//	for decoder.More() {
+//		var chunk DataEntry
+//		if err := decoder.Decode(&chunk); err != nil {
+//			return nil, fmt.Errorf("error decoding response chunk: %w", err)
+//		}
+//		entries = append(entries, chunk)
+//	}
+//
+//	return entries, nil
+//}
+
+func (c *VertexAIClient) generateRequestPayload(prompt string, datastores []string, systemInstructions []string) *RequestPayload {
 	payload := &RequestPayload{
 		Contents: []Message{
 			{
@@ -83,13 +110,20 @@ func (c *VertexAIClient) generateRequestPayload(prompt string, datastores ...str
 		},
 	}
 
-	if len(datastores) > 0 && len(datastores[0]) > 0 {
+	if len(c.configs.Datastore) > 0 {
+		payload.Tools = c.generateDatastoreForPayload(strings.Split(c.configs.Datastore, ","))
+	}
+
+	if len(datastores) > 0 {
 		payload.Tools = c.generateDatastoreForPayload(datastores)
 	}
 
 	if len(c.configs.SystemInstruction) != 0 {
 		payload.SystemInstruction = c.generateSystemInstructionForPayload(strings.Split(c.configs.SystemInstruction, ","))
+	}
 
+	if len(systemInstructions) != 0 {
+		payload.SystemInstruction.Parts = append(payload.SystemInstruction.Parts, c.generateSystemInstructionForPayload(systemInstructions).Parts...)
 	}
 
 	return payload

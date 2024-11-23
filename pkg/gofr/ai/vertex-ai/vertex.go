@@ -49,13 +49,64 @@ func NewVertexAIClientWithKey(configs *Configs) (*VertexAIClient, error) {
 }
 
 // GetResponse sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) GetResponse(prompt string, datastore ...string) (string, error) {
+func (c *VertexAIClient) GetResponse(prompt string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
 	)
 
-	payload := c.generateRequestPayload(prompt, datastore...)
+	payload := c.generateRequestPayload(prompt, nil, nil)
+
+	response, err := c.getResponseFromAPI(url, payload)
+	if err != nil {
+		return "", err
+	}
+
+	return concatenateAllEntries(response), nil
+}
+
+// GetResponseUsingDatastore sends a request to the Vertex AI endpoint and returns the response.
+func (c *VertexAIClient) GetResponseUsingDatastore(prompt string, datastore []string) (string, error) {
+	url := fmt.Sprintf(
+		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
+		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
+	)
+
+	payload := c.generateRequestPayload(prompt, datastore, nil)
+
+	response, err := c.getResponseFromAPI(url, payload)
+	if err != nil {
+		return "", err
+	}
+
+	return concatenateAllEntries(response), nil
+}
+
+// GetResponseUsingSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
+func (c *VertexAIClient) GetResponseUsingSystemInstruction(prompt string, systemInstruction []string) (string, error) {
+	url := fmt.Sprintf(
+		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
+		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
+	)
+
+	payload := c.generateRequestPayload(prompt, nil, systemInstruction)
+
+	response, err := c.getResponseFromAPI(url, payload)
+	if err != nil {
+		return "", err
+	}
+
+	return concatenateAllEntries(response), nil
+}
+
+// GetResponseUsingDatastoreAndSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
+func (c *VertexAIClient) GetResponseUsingDatastoreAndSystemInstruction(prompt string, datastore []string, systemInstruction []string) (string, error) {
+	url := fmt.Sprintf(
+		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
+		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
+	)
+
+	payload := c.generateRequestPayload(prompt, datastore, systemInstruction)
 
 	response, err := c.getResponseFromAPI(url, payload)
 	if err != nil {
