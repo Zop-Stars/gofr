@@ -38,7 +38,7 @@ func (c *Configs) validate() error {
 		configs = append(configs, "Credentials")
 	}
 
-	if len(configs) == 0 {
+	if len(configs) != 0 {
 		return MissingConfig{Configs: configs}
 	}
 
