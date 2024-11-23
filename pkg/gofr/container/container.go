@@ -15,6 +15,7 @@ package container
 import (
 	"context"
 	"errors"
+	"gofr.dev/pkg/gofr/ai"
 	"strconv"
 	"strings"
 	"time"
@@ -63,6 +64,8 @@ type Container struct {
 	KVStore KVStore
 
 	File file.FileSystem
+
+	VertexAI ai.VertexAI
 }
 
 func NewContainer(conf config.Config) *Container {
