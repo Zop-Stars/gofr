@@ -10,8 +10,8 @@ type Configs struct {
 	APIEndpoint       string
 	ModelID           string
 	Credentials       string
-	SystemInstruction string
-	Datastore         string
+	SystemInstruction []string
+	Datastore         []string
 }
 
 func (c *Configs) setDefaults() {

@@ -49,7 +49,7 @@ func NewVertexAIClientWithKey(configs *Configs) (*VertexAIClient, error) {
 }
 
 // GetResponse sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) SendMessage(prompt []map[string]string) (string, error) {
+func (c *VertexAIClient) SendMessage(ctx context.Context, prompt []map[string]string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -57,7 +57,7 @@ func (c *VertexAIClient) SendMessage(prompt []map[string]string) (string, error)
 
 	payload := c.generateRequestPayload(prompt, nil, nil)
 
-	response, err := c.getResponseFromAPI(url, payload)
+	response, err := c.getResponseFromAPI(ctx, url, payload)
 	if err != nil {
 		return "", err
 	}
@@ -66,7 +66,7 @@ func (c *VertexAIClient) SendMessage(prompt []map[string]string) (string, error)
 }
 
 // SendMessageUsingDatastore sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) SendMessageUsingDatastore(prompt []map[string]string, datastore []string) (string, error) {
+func (c *VertexAIClient) SendMessageUsingDatastore(ctx context.Context, prompt []map[string]string, datastore []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -74,7 +74,7 @@ func (c *VertexAIClient) SendMessageUsingDatastore(prompt []map[string]string, d
 
 	payload := c.generateRequestPayload(prompt, datastore, nil)
 
-	response, err := c.getResponseFromAPI(url, payload)
+	response, err := c.getResponseFromAPI(ctx, url, payload)
 	if err != nil {
 		return "", err
 	}
@@ -83,7 +83,7 @@ func (c *VertexAIClient) SendMessageUsingDatastore(prompt []map[string]string, d
 }
 
 // SendMessageUsingSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) SendMessageUsingSystemInstruction(prompt []map[string]string, systemInstruction []string) (string, error) {
+func (c *VertexAIClient) SendMessageUsingSystemInstruction(ctx context.Context, prompt []map[string]string, systemInstruction []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -91,7 +91,7 @@ func (c *VertexAIClient) SendMessageUsingSystemInstruction(prompt []map[string]s
 
 	payload := c.generateRequestPayload(prompt, nil, systemInstruction)
 
-	response, err := c.getResponseFromAPI(url, payload)
+	response, err := c.getResponseFromAPI(ctx, url, payload)
 	if err != nil {
 		return "", err
 	}
@@ -100,7 +100,7 @@ func (c *VertexAIClient) SendMessageUsingSystemInstruction(prompt []map[string]s
 }
 
 // SendMessageUsingDatastoreAndSystemInstruction sends a request to the Vertex AI endpoint and returns the response.
-func (c *VertexAIClient) SendMessageUsingDatastoreAndSystemInstruction(prompt []map[string]string, datastore []string, systemInstruction []string) (string, error) {
+func (c *VertexAIClient) SendMessageUsingDatastoreAndSystemInstruction(ctx context.Context, prompt []map[string]string, datastore []string, systemInstruction []string) (string, error) {
 	url := fmt.Sprintf(
 		"https://%s/v1/projects/%s/locations/%s/publishers/google/models/%s:streamGenerateContent",
 		c.APIEndpoint, c.ProjectID, c.LocationID, c.ModelID,
@@ -108,7 +108,7 @@ func (c *VertexAIClient) SendMessageUsingDatastoreAndSystemInstruction(prompt []
 
 	payload := c.generateRequestPayload(prompt, datastore, systemInstruction)
 
-	response, err := c.getResponseFromAPI(url, payload)
+	response, err := c.getResponseFromAPI(ctx, url, payload)
 	if err != nil {
 		return "", err
 	}

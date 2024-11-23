@@ -2,14 +2,14 @@ package vertex_ai
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
-func (c *VertexAIClient) getResponseFromAPI(url string, payload *RequestPayload) ([]DataEntry, error) {
+func (c *VertexAIClient) getResponseFromAPI(ctx context.Context, url string, payload *RequestPayload) ([]DataEntry, error) {
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal request payload: %w", err)
@@ -21,6 +21,8 @@ func (c *VertexAIClient) getResponseFromAPI(url string, payload *RequestPayload)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+
+	req = req.WithContext(ctx)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -104,7 +106,7 @@ func (c *VertexAIClient) generateRequestPayload(prompt []map[string]string, data
 	}
 
 	if len(c.configs.Datastore) > 0 {
-		payload.Tools = c.generateDatastoreForPayload(strings.Split(c.configs.Datastore, ","))
+		payload.Tools = c.generateDatastoreForPayload(c.configs.Datastore)
 	}
 
 	if len(datastores) > 0 {
@@ -112,7 +114,7 @@ func (c *VertexAIClient) generateRequestPayload(prompt []map[string]string, data
 	}
 
 	if len(c.configs.SystemInstruction) != 0 {
-		payload.SystemInstruction = c.generateSystemInstructionForPayload(strings.Split(c.configs.SystemInstruction, ","))
+		payload.SystemInstruction = c.generateSystemInstructionForPayload(c.configs.SystemInstruction)
 	}
 
 	if len(systemInstructions) != 0 {
