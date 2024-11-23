@@ -10,7 +10,7 @@ require (
 	github.com/pkg/sftp v1.13.6
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/mock v0.5.0
-	gofr.dev v0.19.0
+	gofr.dev v1.27.1
 	golang.org/x/crypto v0.29.0
 )
 
