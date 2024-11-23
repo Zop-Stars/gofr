@@ -93,7 +93,7 @@ func (c *VertexAIClient) generateRequestPayload(prompt []map[string]string, data
 	payload := &RequestPayload{
 		Contents: c.mapToMessage(prompt),
 		GenerationConfig: GenerationConfig{
-			Temperature:     1.0,
+			Temperature:     0,
 			MaxOutputTokens: 8192,
 			TopP:            0.95,
 		},
@@ -110,7 +110,7 @@ func (c *VertexAIClient) generateRequestPayload(prompt []map[string]string, data
 	}
 
 	if len(datastores) > 0 {
-		payload.Tools = c.generateDatastoreForPayload(datastores)
+		payload.Tools = append(payload.Tools, c.generateDatastoreForPayload(datastores)...)
 	}
 
 	if len(c.configs.SystemInstruction) != 0 {
