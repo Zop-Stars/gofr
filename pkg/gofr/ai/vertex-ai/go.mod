@@ -1,4 +1,4 @@
-module gofr-vertex-ai
+module github.com/Zop-Stars/gofr/pkg/ai/gofr-vertex-ai
 
 go 1.23.2
 
